@@ -1,0 +1,315 @@
+"use strict";
+//
+// cuddy
+//
+// Version: 0.0.1
+// Author: Mark W. B. Ashcroft (mark [at] fluidecho [dot] com)
+// License: MIT or Apache 2.0.
+//
+// Copyright (c) 2016 Mark W. B. Ashcroft.
+// Copyright (c) 2016 FluidEcho.
+//
+
+
+const preview       = require('preview')('cuddy');
+const nws						= require('naked-websocket');
+const smp           = require('../../smp-node');		// TODO: cleanup before publish
+const stream 				= smp.StreamParser;
+const util					= require('util');
+const events        = require('events');
+const EventEmitter  = events.EventEmitter;
+const crypto				= require('crypto');
+    
+    
+// public:
+exports.createServer    = createServer;
+exports.connect         = connect;
+
+
+// options, set through app (also: 'headers' and 'path' (connect)):
+var Options = {
+  maxbuffer: 4000,        // max header size, 4000 = 4 KB.
+  version: '0.0.1',       // must be same on all peers.
+  protocol: 'ws',         // 'wss' = secure (TLS), must be same on all peers.
+  slowHandshake: false,   // true: if you wish to manage own auth at app level.
+  timedout: 15000,        // how long to wait for connection, 15 seconds.
+  req_retries: 3,						// int, how many attemps to send request to make before err
+  req_rety_timedout: 1000, 	// ms, how long to wait between send request attemps.
+	headers: {
+		'cubby': '0.0.1',
+		Codec: 'nws+smp',
+		'Codec-Encoding': 'utf8'
+	}	  
+};
+
+
+var options_client = {
+  maxbuffer: 4000,        // max header size, 4000 = 4 KB.
+  version: '0.0.1',       // must be same on all peers.
+  protocol: 'ws',         // 'wss' = secure (TLS), must be same on all peers.
+  timedout: 15000,        // how long to wait for connection, 15 seconds.
+  req_retries: 3,						// int, how many attemps to send request to make before err
+  req_rety_timedout: 1000, 	// ms, how long to wait between send request attemps.
+	headers: {
+		'cubby': '0.0.1',
+		Codec: 'nws+smp',
+		'Codec-Encoding': 'utf8'
+	}	  
+};
+
+ 
+preview('stream', stream);
+
+var parser = new stream({chunking_timeout: 10000});
+
+
+function createServer(options, fn) {
+
+  for ( var o in Options ) if ( !options[o] ) options[o] = Options[o];
+
+  preview('createServer, options', options);
+
+	
+
+
+  var self = this;
+
+	var server = nws.createServer(options, function(socket) {
+	
+		preview('client connected');
+	
+		//preview('socket.headers', socket.headers);
+	
+		//socket.handshake();
+		/*
+		if ( !socket.headers.authorization ) {
+			socket.goodbye(401);
+		} else if ( socket.headers.authorization.password === 'password' ) {
+			socket.handshake();
+		} else {
+			socket.goodbye(401);
+		}
+		*/
+
+		parser.on('message', function(message){
+		  preview('message', message);
+		  
+		  var meta = JSON.parse(message.args[0].toString('utf8'));
+		  preview('meta', meta);
+		  var msgp = message.args[1].toString('utf8');		// TODO: parse depeding on nws.header codec
+		  preview('msgp', msgp);
+		  
+		  if ( meta.type === 'message' )	com.emit('message', msgp);
+		  
+		  if ( meta.type === 'req' ){
+		  	com.emit('request', meta.method, msgp, function(rep) {
+					// send reply to client...
+					//console.log('replying...');
+					meta.type = 'rep';		// change from req to rep.
+					var binmsg = smp.encode([ new Buffer(JSON.stringify(meta)), new Buffer(rep) ]);		// arg[0] = id, arg[1] = payload message data
+					preview('binmsg', binmsg);
+					//setTimeout(function() {
+					socket.write(binmsg.frames[0]);
+					//}, 1100);  	
+				});		
+		  } 
+		  
+		});	
+		
+		parser.on('frame', function(frame){
+		  preview('message', frame);
+		});
+		socket.pipe(parser);	
+	
+
+	
+		socket.on('data', function(chunk) {
+			preview('data, chunk', chunk.toString());
+		});
+	
+	/*
+		var x = 0;
+		setInterval(function() { 
+			if ( socket.writable && socket.handshaked ) {
+				//socket.write('hello client again, x: ' + x++);
+				var binmsg = smp.encode([ new Buffer('0123456789'), new Buffer("abcdefghijklmnopqrstuvwxyz") ], {max_message_size: 55});
+				preview('binmsg', binmsg);
+				socket.write(smp.toBuffer(binmsg));
+			}
+		}, 1000);
+	*/
+	
+	  // com, as EventEmitter.
+		var Com = function() {
+		  EventEmitter.call(this);
+		};  
+		util.inherits(Com, events.EventEmitter);   
+		var com = new Com(); 
+  
+		com.socket = socket;
+
+		com.publish = function publish(msg) {
+		
+				var binmsg = smp.encode([ new Buffer(msg) ]);
+				preview('binmsg', binmsg);
+				
+				socket.write(binmsg.frames[0]);
+		
+		};
+	
+		fn(com);
+	
+	});
+
+
+	//server.listen(8888, function() { //'listening' listener
+	//	preview('server bound');
+	//});
+	
+
+  return server;   // return the server object.
+
+}
+
+
+
+
+
+
+
+function connect(options, fn) {
+
+  for ( var o in options_client ) if ( !options[o] ) options[o] = options_client[o];
+
+  preview('connect, options', options);
+
+  var self = this;
+
+	var registered_requests = {};
+	var socket = undefined; 
+
+	var _client = nws.connect(options, function(_socket) {
+
+		preview('client connected');
+	
+		socket = _socket;
+	
+		preview('socket.headers', socket.headers);
+		
+
+	 	socket.pipe(parser);
+	 	
+		parser.on('frame', function(frame){
+		  preview('frame', frame);
+		});
+		
+		parser.on('message', function(message){
+		  preview('message', message);
+		  
+		  var meta = JSON.parse(message.args[0].toString('utf8'));
+		  preview('meta', meta);
+		  var msgp = message.args[1].toString('utf8');		// TODO: parse depeding on nws.header codec
+		  preview('msgp', msgp);
+		  
+		  if ( meta.type === 'message' )	client.emit('message', msgp);
+		  
+		 	if ( meta.type === 'rep' ) {
+		 		// match with registered callback.
+		 		if ( registered_requests[meta.id] == undefined ) {
+		 			preview('not valid reply id! maybe has allready been handled.');
+		 		} else {
+		 			clearTimeout(registered_requests[meta.id].timedout);
+		 			registered_requests[meta.id].rep( msgp );
+		 			delete registered_requests[meta.id];
+		 		}
+		 	}
+
+		});
+
+		socket.on('data', function(chunk) {
+			preview('chunk ' + chunk);
+		});
+
+	 	if ( socket.body ) {    // if server body was trailing connection header, emit. 
+		  socket.emit('data', socket.body);
+		}
+
+	});
+
+	_client.on('error', function(err) {
+		new Error(err);
+	});
+
+	_client.on('close', function() {
+		console.log('client closed, try reconnecting...');
+		client.emit('close');
+	});
+
+
+		var Client = function() {
+		  EventEmitter.call(this);
+		};  
+		util.inherits(Client, events.EventEmitter);   
+		var client = new Client(); 
+
+		client.socket = socket;
+
+		client.message = function publish(msg, method) {
+		
+			var meta = {};
+			meta.type = 'message',
+			meta.id = crypto.createHash('md5').update(crypto.randomBytes(256)).digest('hex');		// 'hex'
+			if ( method ) meta.method = method;
+		
+			var binmsg = smp.encode([ new Buffer(JSON.stringify(meta)), new Buffer(msg) ]);		// arg[0] = id, arg[1] = payload message data
+			preview('binmsg', binmsg);
+				
+			if ( socket == undefined || !socket.writable ) {
+				console.log('queue this message until socket connects');
+			} else {
+				socket.write(binmsg.frames[0]);
+			}
+		};
+		
+		// TODO: make circular retry/send request
+		var retry = function retry(id) {
+			console.log('retry sending if');
+			// makse sure has not just been recived.
+			if ( registered_requests[id] != undefined ) {
+				preview('retry sending request');
+				registered_requests[id].tries++;		// if too many tries err
+				//if ( registered_requests[id].tries < options.req_retries ) {
+					var binmsg = smp.encode([ new Buffer(JSON.stringify(registered_requests[id].meta)), new Buffer(registered_requests[id].req) ]);		// arg[0] = id, arg[1] = payload message data
+					preview('binmsg', binmsg);
+					socket.write(binmsg.frames[0]);	
+			}
+		};		
+		
+		client.request = function request(method, req, rep) {
+				
+			var meta = {};
+			meta.type = 'req',
+			meta.id = crypto.createHash('md5').update(crypto.randomBytes(256)).digest('hex');		// random id
+			meta.method = undefined;
+			if ( method ) meta.method = method;
+		
+			registered_requests[meta.id] = { meta: meta, req: req, rep: rep, timedout: setTimeout(function() {
+				retry(meta.id);
+			}, 1000), tries: 1 };		// if too many tries err
+		
+			var binmsg = smp.encode([ new Buffer(JSON.stringify(meta)), new Buffer(req) ]);		// arg[0] = id, arg[1] = payload message data
+			preview('binmsg', binmsg);
+				
+			socket.write(binmsg.frames[0]);
+		
+		};		
+
+		//fn(com);
+
+
+  return client;    // return the client object.
+
+}
+
+
+

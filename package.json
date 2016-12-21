@@ -1,0 +1,41 @@
+{
+  "name": "yakkety",
+  "description": "Bi-directional node to node messaging and request-reply.",
+  "version": "0.0.1",
+  "main": "index.js",
+  "homepage": "https://github.com/fluidecho/yakkety",
+  "author": "Mark W. B. Ashcroft <mark@fluidecho.com> (http://fluidecho.com)",
+  "contributors": [
+    "Mark W. B. Ashcroft <mark@fluidecho.com>"
+  ],
+  "dependencies": {
+    "naked-websocket": "0.1.2",
+    "preview": "0.1.1",
+    "smp": "1.1.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fluidecho/yakkety.git"
+  },
+  "bugs": {
+    "url": "http://github.com/fluidecho/yakkety/issues",
+    "email": "bugs@fluidecho.com"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "req-rep",
+    "request-reply",
+    "messaging",
+    "rpc"
+  ],
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "node test.js"
+  }
+}
