@@ -30,7 +30,7 @@ _See examples folder._
 #### Server example
 
 ```js
-const yakkety = require('yakety');
+const yakety = require('yakety');
 
 var options = {
   protocol: 'ws',						// or 'wss' for secure.
@@ -90,7 +90,7 @@ server.on('close', function(client) {
 #### Client example
 
 ```js
-const yakkety = require('yakety');
+const yakety = require('yakety');
 
 var options = {
   protocol: 'ws',			// or 'wss' for secure.
