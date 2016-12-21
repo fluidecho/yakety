@@ -1,6 +1,6 @@
 "use strict";
 //
-// yakkety - server example
+// yakety - server example
 //
 // Version: 0.0.1
 // Author: Mark W. B. Ashcroft (mark [at] fluidecho [dot] com)
@@ -11,7 +11,7 @@
 //
 
 
-const yakkety = require('..');
+const yakety = require('..');
 
 
 var options = {
@@ -25,7 +25,7 @@ var options = {
 };
 
 
-var server = new yakkety.server();
+var server = new yakety.server();
 
 server.bind(options);
 
@@ -45,7 +45,7 @@ server.on('authorize', function(client) {
 
 server.on('connected', function(client) {
   console.log('client connected');
-	client.request('yakMethod', 'yakkety yak?', function(err, reply) {
+	client.request('yakMethod', 'yakety yak?', function(err, reply) {
 		if ( err ) {
 			console.log('client.request reply error', err);
 			return;

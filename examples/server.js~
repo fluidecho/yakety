@@ -17,6 +17,7 @@ const yakkety = require('..');
 var options = {
 	protocol: 'ws',						// or 'wss' for secure.
 	slowHandshake: true,			// true: can do your own authorization and handshake or close socket.
+	port: 8080,
 	//key: fs.readFileSync(__dirname + '/keys/key.pem'),
   //cert: fs.readFileSync(__dirname + '/keys/cert.pem'),	
   //rejectUnauthorized: false,

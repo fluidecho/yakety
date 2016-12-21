@@ -1,5 +1,5 @@
 {
-  "name": "yakkety",
+  "name": "yakety",
   "description": "Bi-directional node to node messaging and request-reply.",
   "version": "0.0.1",
   "main": "index.js",

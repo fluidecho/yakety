@@ -1,1 +1,1 @@
-module.exports = require('./lib/yakkety');
+module.exports = require('./lib/yakety');

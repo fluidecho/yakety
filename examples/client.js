@@ -1,6 +1,6 @@
 "use strict";
 //
-// yakkety - client example
+// yakety - client example
 //
 // Version: 0.0.1
 // Author: Mark W. B. Ashcroft (mark [at] fluidecho [dot] com)
@@ -11,7 +11,7 @@
 //
 
 
-const yakkety = require('..');
+const yakety = require('..');
 
 
 var options = {
@@ -23,18 +23,18 @@ var options = {
 };
 
 
-var client = new yakkety.client();
+var client = new yakety.client();
 
 client.connect(options);
 
 client.message('hello');
 
-client.request('yakketyyakMethod', 'yakkety?', function(err, reply) {
+client.request('yaketyyakMethod', 'yakety?', function(err, reply) {
 		if ( err ) {
 			console.log('client.request reply error', err);
 			return;
 		}
-	console.log('got reply to yakkety?:', reply.toString());
+	console.log('got reply to yakety?:', reply.toString());
 });
 
 client.on('message', function(message, meta) {

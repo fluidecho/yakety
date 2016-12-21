@@ -1,22 +1,52 @@
-const nws = require('..');
+"use strict";
+//
+// yakkety - client example
+//
+// Version: 0.0.1
+// Author: Mark W. B. Ashcroft (mark [at] fluidecho [dot] com)
+// License: MIT or Apache 2.0.
+//
+// Copyright (c) 2016 Mark W. B. Ashcroft.
+// Copyright (c) 2016 FluidEcho.
+//
 
-// use same options as: https://nodejs.org/api/net.html
+
+const yakkety = require('..');
+
+
 var options = {
-  protocol: 'ws',
+  protocol: 'ws',			// or 'wss' for secure.
   hostname: '127.0.0.1',
-  port: 8080
+  port: 8080,
+  path: '/foo/bar/?hello=world',
+	auth: 'username:password'
 };
 
-var client = nws.connect(options, function(socket) {
-  console.log('connected to server!');
 
-  socket.on('data', function(chunk) {
-    console.log(chunk.toString());
-  });
-  
-  if ( socket.body ) {    // if server body was trailing connection header, emit.
-    socket.emit('data', socket.body);
-  }
-  
-  socket.write('world!');
+var client = new yakkety.client();
+
+client.connect(options);
+
+client.message('hello');
+
+client.request('yakketyyakMethod', 'yakkety?', function(err, reply) {
+		if ( err ) {
+			console.log('client.request reply error', err);
+			return;
+		}
+	console.log('got reply to yakkety?:', reply.toString());
 });
+
+client.on('message', function(message, meta) {
+  console.log('got message:', message.toString());
+});
+
+client.on('request', function(meta, req, rep) {
+  console.log('got request, method: ' + meta.method + ', req:', req.toString());
+  rep('Talking back!');
+});
+
+client.on('error', function(err) {
+	console.log('client-app-err', err);
+});
+

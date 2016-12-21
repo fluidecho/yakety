@@ -1,13 +1,13 @@
-# Yakkety
+# Yakety
 
 [![build status][travis-image]][travis-url]
 [![NPM version][npm-image]][npm-url]
 [![node version][node-image]][node-url]
 
-[travis-image]: https://api.travis-ci.org/fluidecho/yakkety.png
-[travis-url]: https://travis-ci.org/fluidecho/yakkety
-[npm-image]: https://img.shields.io/npm/v/dialtone.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/yakkety
+[travis-image]: https://api.travis-ci.org/fluidecho/yakety.png
+[travis-url]: https://travis-ci.org/fluidecho/yakety
+[npm-image]: https://img.shields.io/npm/v/yakety.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/yakety
 [node-image]: https://img.shields.io/badge/node.js-%3E=_0.12-blue.svg?style=flat-square
 [node-url]: http://nodejs.org/download/
 
@@ -19,7 +19,7 @@ Both the server and client can send and recieve messages as well as requests-rep
 ## Installation
 
 ```
-npm install yakkety
+npm install yakety
 ```
 
 
@@ -30,7 +30,7 @@ _See examples folder._
 #### Server example
 
 ```js
-const yakkety = require('yakkety');
+const yakkety = require('yakety');
 
 var options = {
   protocol: 'ws',						// or 'wss' for secure.
@@ -42,7 +42,7 @@ var options = {
 };
 
 
-var server = new yakkety.server();
+var server = new yakety.server();
 
 server.bind(options);
 
@@ -62,7 +62,7 @@ server.on('authorize', function(client) {
 
 server.on('connected', function(client) {
   console.log('client connected');
-  client.request('yakMethod', 'yakkety yak?', function(err, reply) {
+  client.request('yakMethod', 'yakety yak?', function(err, reply) {
     if ( err ) {
       console.log('client.request reply error', err);
       return;
@@ -90,7 +90,7 @@ server.on('close', function(client) {
 #### Client example
 
 ```js
-const yakkety = require('yakkety');
+const yakkety = require('yakety');
 
 var options = {
   protocol: 'ws',			// or 'wss' for secure.
@@ -100,18 +100,18 @@ var options = {
   auth: 'username:password'
 };
 
-var client = new yakkety.client();
+var client = new yakety.client();
 
 client.connect(options);
 
 client.message('hello');
 
-client.request('yakketyyakMethod', 'yakkety?', function(err, reply) {
+client.request('yaketyyakMethod', 'yakety?', function(err, reply) {
   if ( err ) {
     console.log('client.request reply error', err);
     return;
   }
-  console.log('got reply to yakkety?:', reply.toString());
+  console.log('got reply to yakety?:', reply.toString());
 });
 
 client.on('message', function(message, meta) {

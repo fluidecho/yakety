@@ -1,5 +1,5 @@
 "use strict";
-const yakkety = require('./');
+const yakety = require('./');
 
 function fail(msg) {
 	var e = new Error('TestError: ' + msg);
@@ -9,7 +9,7 @@ function fail(msg) {
 
 
 // server
-var server = new yakkety.server();
+var server = new yakety.server();
 
 server.bind({ protocol: 'ws', slowHandshake: true, port: 8989 });
 
@@ -34,7 +34,7 @@ server.on('authorize', function(client) {
 server.on('connected', function(client) {
   //console.log('server: client connected');
   
-	client.request('yakMethod', 'yakkety yak?', function(err, reply) {
+	client.request('yakMethod', 'yakety yak?', function(err, reply) {
 		if ( err ) {
 			fail(err);
 			return;
@@ -63,7 +63,7 @@ server.on('close', function(client) {
 
 
 // client
-var client = new yakkety.client();
+var client = new yakety.client();
 var sock = undefined;
 client.connect({ protocol: 'ws', hostname: '127.0.0.1', port: 8989, path: '/foo/bar/?hello=world', auth: 'username:password', connectOnce: true }, function(_sock) {
 	sock = _sock;
@@ -78,14 +78,14 @@ client.message('hello');
 client.on('message', function(message, meta) {
   //console.log('client: got message:', message.toString());
 
-	client.request('yakketyyakMethod', 'yakkety?', function(err, reply) {
+	client.request('yaketyyakMethod', 'yakety?', function(err, reply) {
 		if ( err ) {
 			//console.log('client err');
 			fail(err);
 			return;
 		}
 		
-		//console.log('client: got reply to yakkety?:', reply.toString());
+		//console.log('client: got reply to yakety?:', reply.toString());
 
 		if ( reply.toString() != 'Yak!' ) fail('server reply is invalid');
 		
