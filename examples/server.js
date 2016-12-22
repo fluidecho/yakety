@@ -2,7 +2,7 @@
 //
 // yakety - server example
 //
-// Version: 0.0.1
+// Version: 0.0.5
 // Author: Mark W. B. Ashcroft (mark [at] fluidecho [dot] com)
 // License: MIT or Apache 2.0.
 //
@@ -15,13 +15,13 @@ const yakety = require('..');
 
 
 var options = {
-	protocol: 'ws',						// or 'wss' for secure.
-	slowHandshake: true,			// true: can do your own authorization and handshake or close socket.
-	port: 8080,
-	//key: fs.readFileSync(__dirname + '/keys/key.pem'),
-  //cert: fs.readFileSync(__dirname + '/keys/cert.pem'),	
+  protocol: 'ws',            // or 'wss' for secure.
+  slowHandshake: true,      // true: can do your own authorization and handshake or close socket.
+  port: 8080,
+  //key: fs.readFileSync(__dirname + '/keys/key.pem'),
+  //cert: fs.readFileSync(__dirname + '/keys/cert.pem'),  
   //rejectUnauthorized: false,
-	//requestCert: true
+  //requestCert: true
 };
 
 
@@ -33,26 +33,26 @@ server.bind(options);
 server.on('authorize', function(client) {
   console.log('authorize client');
   
- 	if ( !client.headers.authorization ) {
-		client.goodbye(401);
-	} else if ( client.headers.authorization.password === 'password' ) {
-		client.handshake();
-	} else {
-		client.goodbye(401);
-	} 
+  if ( !client.headers.authorization ) {
+    client.goodbye(401);
+  } else if ( client.headers.authorization.password === 'password' ) {
+    client.handshake();
+  } else {
+    client.goodbye(401);
+  } 
   
 });
 
 server.on('connected', function(client) {
   console.log('client connected');
-	client.request('yakMethod', 'yakety yak?', function(err, reply) {
-		if ( err ) {
-			console.log('client.request reply error', err);
-			return;
-		}
-		console.log('got reply back:', reply.toString());
-		client.message('this is rock and roll.');
-	});		
+  client.request('yakMethod', 'yakety yak?', function(err, reply) {
+    if ( err ) {
+      console.log('client.request reply error', err);
+      return;
+    }
+    console.log('got reply back:', reply.toString());
+    client.message('this is rock and roll.');
+  });    
 });
 
 server.on('message', function(message, meta) {

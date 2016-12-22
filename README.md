@@ -8,7 +8,7 @@
 [travis-url]: https://travis-ci.org/fluidecho/yakety
 [npm-image]: https://img.shields.io/npm/v/yakety.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/yakety
-[node-image]: https://img.shields.io/badge/node.js-%3E=_0.12-blue.svg?style=flat-square
+[node-image]: https://img.shields.io/badge/node.js-%3E=_1-blue.svg?style=flat-square
 [node-url]: http://nodejs.org/download/
 
 Bi-directional node to node messaging and request-reply.  
@@ -33,10 +33,11 @@ _See examples folder._
 const yakety = require('yakety');
 
 var options = {
-  protocol: 'ws',						// or 'wss' for secure.
-	slowHandshake: true,			// true: can do your own authorization and handshake or close socket.
+  protocol: 'ws',            // or 'wss' for secure.
+  slowHandshake: true,      // true: can do your own authorization and handshake or close socket.
+  port: 8080,
   //key: fs.readFileSync(__dirname + '/keys/key.pem'),
-  //cert: fs.readFileSync(__dirname + '/keys/cert.pem'),	
+  //cert: fs.readFileSync(__dirname + '/keys/cert.pem'),  
   //rejectUnauthorized: false,
   //requestCert: true
 };
@@ -93,7 +94,7 @@ server.on('close', function(client) {
 const yakety = require('yakety');
 
 var options = {
-  protocol: 'ws',			// or 'wss' for secure.
+  protocol: 'ws',      // or 'wss' for secure.
   hostname: '127.0.0.1',
   port: 8080,
   path: '/foo/bar/?hello=world',
