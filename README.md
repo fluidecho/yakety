@@ -50,15 +50,15 @@ server.bind(options);
 // auth clients:
 server.on('authorize', function(client) {
   console.log('authorize client');
-  
+
   if ( !client.headers.authorization ) {
     client.goodbye(401);
   } else if ( client.headers.authorization.password === 'password' ) {
     client.handshake();
   } else {
     client.goodbye(401);
-  } 
-  
+  }
+
 });
 
 server.on('connected', function(client) {
@@ -130,6 +130,12 @@ client.on('error', function(err) {
 
 ```
 
+## Test
+
+```
+npm test
+```
+
 ## Notes
 
 Uses [naked-websocket](https://www.npmjs.com/package/naked-websocket) as the TCP/TLS network link and [SMP](https://www.npmjs.com/package/smp) for message framing, with any payload codec: String, Buffer, JSON, MsgPack, etc.  
@@ -138,4 +144,3 @@ Uses [naked-websocket](https://www.npmjs.com/package/naked-websocket) as the TCP
 ## License
 
 Choose either: [MIT](http://opensource.org/licenses/MIT) or [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0).
-

@@ -16,7 +16,7 @@ server.bind({ protocol: 'ws', slowHandshake: true, port: 8989 });
 // auth clients:
 server.on('authorize', function(client) {
   //console.log('server: authorize client');
-  
+
   if ( !client.headers.authorization ) {
     client.goodbye(401);
     fail('server, invalid client authorization: 401');
@@ -27,13 +27,13 @@ server.on('authorize', function(client) {
     client.goodbye(401);
     fail('server, invalid client authorization: 401');
     server.close();
-  } 
-  
+  }
+
 });
 
 server.on('connected', function(client) {
   //console.log('server: client connected');
-  
+
   client.request('yakMethod', 'yakety yak?', function(err, reply) {
     if ( err ) {
       fail(err);
@@ -42,7 +42,7 @@ server.on('connected', function(client) {
     //console.log('server: got reply back:', reply.toString());
     client.message('this is rock and roll.');
   });
-    
+
 });
 
 server.on('message', function(message, meta) {
@@ -84,14 +84,14 @@ client.on('message', function(message, meta) {
       fail(err);
       return;
     }
-    
+
     //console.log('client: got reply to yakety?:', reply.toString());
 
     if ( reply.toString() != 'Yak!' ) fail('server reply is invalid');
-    
+
     sock.destroy();
-  });  
-  
+  });
+
 });
 
 client.on('request', function(meta, req, rep) {
@@ -103,4 +103,3 @@ client.on('error', function(err) {
   //console.log('client: client-app-err', err);
   fail(err);
 });
-
