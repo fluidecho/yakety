@@ -2,12 +2,12 @@
 //
 // yakety - client example
 //
-// Version: 0.0.5
+// Version: 0.0.6
 // Author: Mark W. B. Ashcroft (mark [at] fluidecho [dot] com)
 // License: MIT or Apache 2.0.
 //
-// Copyright (c) 2016 Mark W. B. Ashcroft.
-// Copyright (c) 2016 FluidEcho.
+// Copyright (c) 2017 Mark W. B. Ashcroft.
+// Copyright (c) 2017 FluidEcho.
 //
 
 
@@ -49,4 +49,3 @@ client.on('request', function(meta, req, rep) {
 client.on('error', function(err) {
   console.log('client-app-err', err);
 });
-

@@ -71,19 +71,20 @@ server.on('connected', function(client) {
     console.log('got reply back:', reply.toString());
     client.message('this is rock and roll.');
   });
-});
 
-server.on('message', function(message, meta) {
-  console.log('server got message:', message.toString());
-});
+  client.on('message', function(message, meta) {
+    console.log('server got message:', message.toString());
+  });
 
-server.on('request', function(meta, req, rep) {
-  console.log('got request, method: ' + meta.method + ', req:', req.toString());
-  rep('yak!');
-});
+  client.on('request', function(meta, req, rep) {
+    console.log('got request, method: ' + meta.method + ', req:', req.toString());
+    rep('yak!');
+  });
 
-server.on('close', function(client) {
-  console.log('client close-ed');
+  client.on('close', function(client) {
+    console.log('client close-ed');
+  });
+
 });
 
 ```

@@ -31,34 +31,34 @@ server.on('authorize', function(client) {
 
 });
 
-server.on('connected', function(client) {
+server.on('connected', function(_client) {
   //console.log('server: client connected');
 
-  client.request('yakMethod', 'yakety yak?', function(err, reply) {
+  _client.request('yakMethod', 'yakety yak?', function(err, reply) {
     if ( err ) {
       fail(err);
       return;
     }
     //console.log('server: got reply back:', reply.toString());
-    client.message('this is rock and roll.');
+    _client.message('this is rock and roll.');
   });
 
-});
-
-server.on('message', function(message, meta) {
-  //console.log('server: server got message:', message.toString());
-});
-
-server.on('request', function(meta, req, rep) {
-  //console.log('server: got request, method: ' + meta.method + ', req:', req.toString());
-  rep('Yak!');
-});
-
-server.on('close', function(client) {
-  //console.log('server: client close-ed');
-   server.close(function() {
-    //console.log('server: has closed');
+  _client.on('message', function(message, meta) {
+    //console.log('server: server got message:', message.toString());
   });
+
+  _client.on('request', function(meta, req, rep) {
+    //console.log('server: got request, method: ' + meta.method + ', req:', req.toString());
+    rep('Yak!');
+  });
+
+  _client.on('close', function(client) {
+    //console.log('server: client close-ed');
+     server.close(function() {
+      //console.log('server: has closed');
+    });
+  });
+
 });
 
 
