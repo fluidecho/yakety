@@ -13,8 +13,9 @@
 
 Bi-directional node to node messaging and request-reply.  
 
-Both the server and client can send and recieve messages as well as requests-replys.
+Both the server and client can send and receive messages as well as requests-replys.
 
+Yakety is a bit like REST, but allows the server to instigate requests to the client, plus fire-and-forget messages. Yakety will also maintain persistent connections by automatically reconnecting clients. Yakety is for back-end node to node communications, not a browser compatible solution.
 
 ## Installation
 
@@ -35,11 +36,7 @@ const yakety = require('yakety');
 var options = {
   protocol: 'ws',            // or 'wss' for secure.
   slowHandshake: true,      // true: can do your own authorization and handshake or close socket.
-  port: 8080,
-  //key: fs.readFileSync(__dirname + '/keys/key.pem'),
-  //cert: fs.readFileSync(__dirname + '/keys/cert.pem'),  
-  //rejectUnauthorized: false,
-  //requestCert: true
+  port: 8080
 };
 
 
@@ -139,7 +136,7 @@ npm test
 
 ## Notes
 
-Uses [naked-websocket](https://www.npmjs.com/package/naked-websocket) as the TCP/TLS network link and [SMP](https://www.npmjs.com/package/smp) for message framing, with any payload codec: String, Buffer, JSON, MsgPack, etc.  
+Yakety is built on top of these open protocols: [naked-websocket](https://www.npmjs.com/package/naked-websocket) for TCP/TLS network link and [SMP](https://www.npmjs.com/package/smp) for message framing, with any payload codec: String, Buffer, JSON, MsgPack, etc.  
 
 
 ## License
