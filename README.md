@@ -15,7 +15,7 @@ Bi-directional node to node messaging and request-reply.
 
 Both the server and client can send and receive messages as well as requests-replys.
 
-Yakety is a bit like REST, but allows the server to instigate requests to the client, plus fire-and-forget messages. Yakety will also maintain persistent connections by automatically reconnecting clients. Yakety is for back-end node to node communications, not a browser compatible solution.
+Yakety is a bit like a RESTful service, but allows the server to instigate requests to the client, plus fire-and-forget messages. Yakety will also maintain persistent connections by automatically reconnecting clients. Yakety is for back-end node to node communications, not a browser compatible solution.
 
 ## Installation
 
